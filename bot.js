@@ -437,7 +437,7 @@ client.on("message", async message => {
                         let footer = 'Game🌀Space #' + data2['id'];
                         let embed = new Discord.RichEmbed()
                             .setTitle('Удалено предупреждение')
-                            .addField('Пользователь', `${message.guild.members.get(data2['user_to']).user} (\`${message.guild.members.get(data2['user_to']).user.tag}\`)`, true)
+                            .addField('Пользователь', `${message.guild.members.get(data2['discord_id']).user} (\`${message.guild.members.get(data2['discord_id']).user.tag}\`)`, true)
                             .addField('Модератор', `${message.author} (\`${message.author.tag}\`)`, true)
                             .addField('Причина', `${data2['reason']}`)
                             .addField('Кто удалил?', `${message.author}`, true)
