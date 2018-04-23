@@ -104,7 +104,7 @@ function embed_error(text) {
 
 async function unmute(member, mute_id, time, reason = 'Автоматический анмут') {
     setBigTimeout( function () {
-        request(`https://${process.env.SITE_DOMAIN}/unmute.php?mute=${mute_id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, async function (error, response, body) {
+        request(`http://${process.env.SITE_DOMAIN}/unmute.php?mute=${mute_id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, async function (error, response, body) {
             try { let data = JSON.parse(body);
             if (!data['error']) {
                 member.removeRole('427148609776254986').catch(console.error);
@@ -192,7 +192,7 @@ String.prototype.replaceAll = function(search, replacement) {
 client.on('ready', () => {
 	console.log('Bot loaded');
 	client.user.setPresence({ game: { name: `за GameSpace'ом`, type: 3 } }).catch();
-    request(`https://${process.env.SITE_DOMAIN}/get_mute.php?&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, async function (error, response, body) {
+    request(`http://${process.env.SITE_DOMAIN}/get_mute.php?&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, async function (error, response, body) {
         let data = JSON.parse(body);
         data.forEach(function (item) {
             unmute(client.guilds.get('417266233562365952').members.get(item[0]['discord_id']), item[0]['id'], item[1]*1000).catch(console.err);
@@ -208,7 +208,7 @@ client.on('ready', () => {
 client.on("messageUpdate", async (old_message, message) => {
     if (getStringCapsPercent(message.content) > 85 && message.content.length > 3 && message.content !== '' && !message.author.bot && !message.member.roles.has(rule.game_admin) && !creators.includes(message.author.id)) {
         let reason = 'Капс в чате. Сообщение:\n'+message.content;
-        request(`https://${process.env.SITE_DOMAIN}/warn.php?id=${message.author.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, function (error, response, body) {
+        request(`http://${process.env.SITE_DOMAIN}/warn.php?id=${message.author.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, function (error, response, body) {
             let data = JSON.parse(body);
             let footer = 'Game🌀Space #'+data.id;
             if (reason === null || typeof reason === 'undefined') reason = 'Причина не указана.';
@@ -238,7 +238,7 @@ client.on("message", async message => {
 
     if (getStringCapsPercent(message.content) > 85 && message.content.length > 3 && message.content !== '' && !message.author.bot && !message.member.roles.has(rule.game_admin) && !creators.includes(message.author.id)) {
         let reason = 'Капс в чате. Сообщение:\n'+message.content;
-        request(`https://${process.env.SITE_DOMAIN}/warn.php?id=${message.author.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, function (error, response, body) {
+        request(`http://${process.env.SITE_DOMAIN}/warn.php?id=${message.author.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, function (error, response, body) {
             try {
                 let data = JSON.parse(body);
                 let footer = 'Game🌀Space #' + data.id;
@@ -291,7 +291,7 @@ client.on("message", async message => {
             if (['да', 'ага', 'кнш', 'конечно', 'конешно', 'давай', 'йес', 'yes', 'y', 'aga', 'go', 'da', 'го'].includes(msg.content.toLowerCase())) {
                 message.channel.startTyping();
                 message.delete();
-                request(`https://${process.env.SITE_DOMAIN}/warn.php?id=${user.user.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
+                request(`http://${process.env.SITE_DOMAIN}/warn.php?id=${user.user.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
                     let data = JSON.parse(body);
                     let footer = 'Game🌀Space #'+data.id;
                     if (reason === null || typeof reason === 'undefined') reason = 'Причина не указана.';
@@ -335,7 +335,7 @@ client.on("message", async message => {
         }
         let page = args[0];
         if (!isNumeric(page)) page = 1;
-        request(`https://${process.env.SITE_DOMAIN}/punishments.php?&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${user.user.id}`, function (error, response, body) {
+        request(`http://${process.env.SITE_DOMAIN}/punishments.php?&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${user.user.id}`, function (error, response, body) {
             let data1 = JSON.parse(body);
             let data = [''].concat(data1);
             let punishments = '';
@@ -412,7 +412,7 @@ client.on("message", async message => {
         if (reason === null || typeof reason === undefined || reason === '') reason = 'Причина не указана.';
 
         message.channel.startTyping();
-        request(`https://${process.env.SITE_DOMAIN}/get_warn.php?warn=${warn}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
+        request(`http://${process.env.SITE_DOMAIN}/get_warn.php?warn=${warn}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
             message.channel.stopTyping(true);
             console.log(body);
             if (body.trim() === '[]') return message.channel.send({embed: embed_error(`${message.author}, извините, но данного варна не существует`)});
@@ -432,7 +432,7 @@ client.on("message", async message => {
             collector.on('collect', msg => {
                 if (['да', 'ага', 'кнш', 'конечно', 'конешно', 'давай', 'йес', 'yes', 'y', 'aga', 'go', 'da', 'го'].includes(msg.content.toLowerCase())) {
                     message.channel.startTyping();
-                    request(`https://${process.env.SITE_DOMAIN}/remove_warn.php?warn=${warn}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
+                    request(`http://${process.env.SITE_DOMAIN}/remove_warn.php?warn=${warn}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
                         message.channel.stopTyping(true);
                         let footer = 'Game🌀Space #' + data2['id'];
                         let embed = new Discord.RichEmbed()
@@ -512,7 +512,7 @@ client.on("message", async message => {
             if (['да', 'ага', 'кнш', 'конечно', 'конешно', 'давай', 'йес', 'yes', 'y', 'aga', 'go', 'da', 'го'].includes(msg.content.toLowerCase())) {
                 message.channel.startTyping();
                 message.delete();
-                request(`https://${process.env.SITE_DOMAIN}/mute.php?id=${user.user.id}&time=${time*1000}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
+                request(`http://${process.env.SITE_DOMAIN}/mute.php?id=${user.user.id}&time=${time*1000}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
                     let data = JSON.parse(body);
                     let footer = 'Game🌀Space #'+data.id;
                     if (reason === null || typeof reason === 'undefined') reason = 'Причина не указана.';
@@ -548,7 +548,7 @@ client.on("message", async message => {
         if (!member) return message.channel.send({embed: embed_error('Данный пользователь не является участником сервера')});
         args.shift();
         let reason = args.join(' ');
-        request(`https://${process.env.SITE_DOMAIN}/auto_unmute.php?reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}&id=${member.user.id}`, function (error, response, body) {
+        request(`http://${process.env.SITE_DOMAIN}/auto_unmute.php?reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}&id=${member.user.id}`, function (error, response, body) {
             message.channel.send(`Пользователь ${member} был размучен.`);
         });
         member.removeRole('427148609776254986').catch(console.error);
