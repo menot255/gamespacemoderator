@@ -418,11 +418,11 @@ client.on("message", async message => {
             if (body.trim() === '[]') return message.channel.send({embed: embed_error(`${message.author}, извините, но данного варна не существует`)});
             let data2 = JSON.parse(body);
             if (data2['type'] !== 'warn') return message.channel.send({embed: embed_error(`${message.author}, извините, но данного варна не существует`)});
-            if (data2['user_to'] === message.author.id) return message.channel.send({embed: embed_error(`${message.author}, извините, но вы не можете удалить наказание, которое было адресовано вам`)});
+            if (data2['discord_id'] === message.author.id) return message.channel.send({embed: embed_error(`${message.author}, извините, но вы не можете удалить наказание, которое было адресовано вам`)});
             let const_embed = new Discord.RichEmbed()
                 .setTitle('Предупреждение')
                 // .setDescription(`**Пользователь:** ${user.user}\n**Модератор:** ${message.author}\n**Причина:**\n\n${reason}`)
-                .addField('Пользователь', `${message.guild.members.get(data2['user_to']).user} (\`${message.guild.members.get(data2['user_to']).user.tag}\`)`, true)
+                .addField('Пользователь', `${message.guild.members.get(data2['discord_id']).user} (\`${message.guild.members.get(data2['discord_id']).user.tag}\`)`, true)
                 .addField('Модератор', `${message.guild.members.get(data2['user_from']).user} (\`${message.guild.members.get(data2['user_from']).user.tag}\`)`, true)
                 .addField('Причина', `${data2['reason']}`)
                 .setFooter('Game🌀Space #'+data2.id)
