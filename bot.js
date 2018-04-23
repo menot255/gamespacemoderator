@@ -206,7 +206,7 @@ client.on('ready', () => {
 
 
 client.on("messageUpdate", async (old_message, message) => {
-    if (getStringCapsPercent(message.content) > 85 && message.content.length > 3 && message.content !== '' && !message.author.bot && !message.member.roles.has(rule.game_admin) && !creators.includes(message.author.id)) {
+    if (getStringCapsPercent(message.content) > 80 && message.content.replace(/[^A-ZА-ЯІЇЁ]/g, '').length > 8 && message.content !== '' && !message.author.bot) {
         let reason = 'Капс в чате. Сообщение:\n'+message.content;
         request(`http://${process.env.SITE_DOMAIN}/warn.php?id=${message.author.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, function (error, response, body) {
             let data = JSON.parse(body);
