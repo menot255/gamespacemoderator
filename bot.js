@@ -209,6 +209,7 @@ client.on("messageUpdate", async (old_message, message) => {
     if (getStringCapsPercent(message.content) > 80 && message.content.replace(/[^a-zа-яA-ZА-ЯІЇЁёії]/g, '').length > 5 && message.content !== '' && !message.author.bot) {
         let reason = 'Капс в чате. Сообщение:\n'+message.content;
         request(`http://${process.env.SITE_DOMAIN}/warn.php?id=${message.author.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, function (error, response, body) {
+            try {
             let data = JSON.parse(body);
             let footer = 'Game🌀Space #'+data.id;
             if (reason === null || typeof reason === 'undefined') reason = 'Причина не указана.';
@@ -222,6 +223,7 @@ client.on("messageUpdate", async (old_message, message) => {
             if (reason !== null && typeof reason !== undefined && reason !== '') embed.addField('Причина', `${reason}`);
             message.channel.send(`${message.author} получил варн по причине \`капс в чате\`. #${data.id}`);
             message.guild.channels.get('426756919777165312').send({embed});
+            } catch (Exception) {message.channel.send({embed: embed_error('Ошибка авто-варна.')})}
         });
     }
 });
@@ -292,19 +294,23 @@ client.on("message", async message => {
                 message.channel.startTyping();
                 message.delete();
                 request(`http://${process.env.SITE_DOMAIN}/warn.php?id=${user.user.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
-                    let data = JSON.parse(body);
-                    let footer = 'Game🌀Space #'+data.id;
-                    if (reason === null || typeof reason === 'undefined') reason = 'Причина не указана.';
-                    let embed = new Discord.RichEmbed()
-                        .setTitle('Предупреждение')
-                        // .setDescription(`**Пользователь:** ${user.user}\n**Модератор:** ${message.author}\n**Причина:**\n\n${reason}`)
-                        .addField('Пользователь', `${user.user} (\`${user.user.tag}\`)`, true)
-                        .addField('Модератор', `${message.author} (\`${message.author.tag}\`)`, true)
-                        .setFooter(footer)
-                        .setColor('F1C40F');
-                    if (reason !== null && typeof reason !== undefined && reason !== '') embed.addField('Причина', `${reason}`);
-                    message.channel.send(`${user.user}`, {embed}).then(() => {message.channel.stopTyping(true)});
-                    message.guild.channels.get('426756919777165312').send({embed});
+                    try {
+                        let data = JSON.parse(body);
+                        let footer = 'Game🌀Space #' + data.id;
+                        if (reason === null || typeof reason === 'undefined') reason = 'Причина не указана.';
+                        let embed = new Discord.RichEmbed()
+                            .setTitle('Предупреждение')
+                            // .setDescription(`**Пользователь:** ${user.user}\n**Модератор:** ${message.author}\n**Причина:**\n\n${reason}`)
+                            .addField('Пользователь', `${user.user} (\`${user.user.tag}\`)`, true)
+                            .addField('Модератор', `${message.author} (\`${message.author.tag}\`)`, true)
+                            .setFooter(footer)
+                            .setColor('F1C40F');
+                        if (reason !== null && typeof reason !== undefined && reason !== '') embed.addField('Причина', `${reason}`);
+                        message.channel.send(`${user.user}`, {embed}).then(() => {
+                            message.channel.stopTyping(true)
+                        });
+                        message.guild.channels.get('426756919777165312').send({embed});
+                    } catch (Exception) {message.channel.send({embed: embed_error('Ошибка варна.')})}
                 });
             }
             console.log(collector);
@@ -336,68 +342,70 @@ client.on("message", async message => {
         let page = args[0];
         if (!isNumeric(page)) page = 1;
         request(`http://${process.env.SITE_DOMAIN}/punishments.php?&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${user.user.id}`, function (error, response, body) {
-            let data1 = JSON.parse(body);
-            let data = [''].concat(data1);
-            let punishments = '';
-            console.log(data1);
-            let limit = 5;
-            let all_pages = Math.ceil(data.length/limit);
-            console.log(all_pages);
-            let current_page = parseInt(page);
-            if (current_page > all_pages || current_page < 1 || !isNumeric(page))
-                current_page = 1;
-            console.log(current_page);
-            let all_data = data.slice(1+((current_page-1)*limit), (limit+1)+((current_page-1)*limit));
-            console.log(all_data);
-            let user_text = '';
-            if (user !== message.member) user_text = ` ${user}`;
-            let next_page = ``;
-            if (current_page < all_pages) next_page = `Для просмотра следующей страницы введите:\n${process.env.PREFIX}${command} ${current_page+1}${user_text}`;
-            let footer = 'Стр. '+current_page+'/'+all_pages+'; '+data.filter(pun => pun['type'] === 'warn' && pun['deleted'] === false).length+' '+declOfNum(data.filter(pun => pun['type'] === 'warn' && pun['deleted'] === false).length, ['варн', 'варна', 'варнов'])+'; '+data.filter(pun1=>pun1['type'] === 'mute' && pun1['deleted'] === false).length+' '+declOfNum(data.filter(pun1=>pun1['type'] === 'mute' && pun1['deleted'] === false).length, ['мут', 'мута', 'мутов']);
-            all_data.forEach(function (item, num) {
-                if (item['deleted'] === '1') return;
-                if (item === [] || item === '') return;
-                console.log('cho?');
-                let type;
-                switch (item['type']) {
-                    case 'warn':
-                        type = 'Варн\\🚫';
-                        break;
-                    case 'mute':
-                        type = 'Мут\\😠';
-                        break;
-                    case 'kick':
-                        type = 'Кик\\👿';
-                        break;
-                    default:
-                        type = 'Варн';
-                }
-                punishments = punishments + '***Нарушение*** *(ID: `' + item['id'] + '`)*\n';
-                punishments = punishments + '**Тип: __' + type + '__**\n';
-                punishments = punishments + '**От:** ' + message.guild.members.get(item['user_from']).toString() + '(`' + message.guild.members.get(item['user_from']).user.tag + '`)\n';
-                if (item['type'] === 'mute') {
-
-                    punishments = punishments + '**Длительность:** ' + item['time'] + 'мс\n';
-                }
-                if (item['type'] === 'mute') {
-                    let zak;
-                    if (item['unmuted']) zak = 'Нет';
-                    else zak = 'Да';
-                    punishments = punishments + '**Действует?** ' + zak + '\n';
-                    if (item['unmuted']) {
-                        punishments = punishments + '**Размут от:** ' + message.guild.members.get(item['unmute_who_id']).toString() + '\n';
-                        punishments = punishments + '**Причина размута: ' + item['unmute_reason'] + '**\n';
+            try {
+                let data1 = JSON.parse(body);
+                let data = [''].concat(data1);
+                let punishments = '';
+                console.log(data1);
+                let limit = 5;
+                let all_pages = Math.ceil(data.length/limit);
+                console.log(all_pages);
+                let current_page = parseInt(page);
+                if (current_page > all_pages || current_page < 1 || !isNumeric(page))
+                    current_page = 1;
+                console.log(current_page);
+                let all_data = data.slice(1+((current_page-1)*limit), (limit+1)+((current_page-1)*limit));
+                console.log(all_data);
+                let user_text = '';
+                if (user !== message.member) user_text = ` ${user}`;
+                let next_page = ``;
+                if (current_page < all_pages) next_page = `Для просмотра следующей страницы введите:\n${process.env.PREFIX}${command} ${current_page+1}${user_text}`;
+                let footer = 'Стр. '+current_page+'/'+all_pages+'; '+data.filter(pun => pun['type'] === 'warn' && pun['deleted'] === false).length+' '+declOfNum(data.filter(pun => pun['type'] === 'warn' && pun['deleted'] === false).length, ['варн', 'варна', 'варнов'])+'; '+data.filter(pun1=>pun1['type'] === 'mute' && pun1['deleted'] === false).length+' '+declOfNum(data.filter(pun1=>pun1['type'] === 'mute' && pun1['deleted'] === false).length, ['мут', 'мута', 'мутов']);
+                all_data.forEach(function (item, num) {
+                    if (item['deleted'] === '1') return;
+                    if (item === [] || item === '') return;
+                    console.log('cho?');
+                    let type;
+                    switch (item['type']) {
+                        case 'warn':
+                            type = 'Варн\\🚫';
+                            break;
+                        case 'mute':
+                            type = 'Мут\\😠';
+                            break;
+                        case 'kick':
+                            type = 'Кик\\👿';
+                            break;
+                        default:
+                            type = 'Варн';
                     }
-                }
-                punishments = punishments + '|\\⚠ = **' + item['reason'].replace(/` /g, '\'').replace(/\n/g, ' ') + '**\n\n';
-            });
-            if (punishments === '' && current_page === 1) punishments = `Нарушений нет. ${user_molodec} :thumbsup::skin-tone-2:\n\n`;
-            let embed = new Discord.RichEmbed()
-                .setTitle('Список нарушений')
-                .setDescription(`Данные о пользователе ${user.user} (\`${user.user.tag}\`)${requested}\n\n${punishments}${next_page}`)
-                .setFooter(footer)
-                .setColor('F1C40F');
-            message.channel.send(`${user.user}`, {embed}).then(() => {message.channel.stopTyping(true)});
+                    punishments = punishments + '***Нарушение*** *(ID: `' + item['id'] + '`)*\n';
+                    punishments = punishments + '**Тип: __' + type + '__**\n';
+                    punishments = punishments + '**От:** ' + message.guild.members.get(item['user_from']).toString() + '(`' + message.guild.members.get(item['user_from']).user.tag + '`)\n';
+                    if (item['type'] === 'mute') {
+
+                        punishments = punishments + '**Длительность:** ' + item['time'] + 'мс\n';
+                    }
+                    if (item['type'] === 'mute') {
+                        let zak;
+                        if (item['unmuted']) zak = 'Нет';
+                        else zak = 'Да';
+                        punishments = punishments + '**Действует?** ' + zak + '\n';
+                        if (item['unmuted']) {
+                            punishments = punishments + '**Размут от:** ' + message.guild.members.get(item['unmute_who_id']).toString() + '\n';
+                            punishments = punishments + '**Причина размута: ' + item['unmute_reason'] + '**\n';
+                        }
+                    }
+                    punishments = punishments + '|\\⚠ = **' + item['reason'].replace(/` /g, '\'').replace(/\n/g, ' ') + '**\n\n';
+                });
+                if (punishments === '' && current_page === 1) punishments = `Нарушений нет. ${user_molodec} :thumbsup::skin-tone-2:\n\n`;
+                let embed = new Discord.RichEmbed()
+                    .setTitle('Список нарушений')
+                    .setDescription(`Данные о пользователе ${user.user} (\`${user.user.tag}\`)${requested}\n\n${punishments}${next_page}`)
+                    .setFooter(footer)
+                    .setColor('F1C40F');
+                message.channel.send(`${user.user}`, {embed}).then(() => {message.channel.stopTyping(true)});
+            } catch (Exception) {message.channel.send({embed: embed_error('Ошибка варна.')})}
         });
     });
 
@@ -413,6 +421,7 @@ client.on("message", async message => {
 
         message.channel.startTyping();
         request(`http://${process.env.SITE_DOMAIN}/get_warn.php?warn=${warn}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
+            try {
             message.channel.stopTyping(true);
             console.log(body);
             if (body.trim() === '[]') return message.channel.send({embed: embed_error(`${message.author}, извините, но данного варна не существует`)});
@@ -433,6 +442,7 @@ client.on("message", async message => {
                 if (['да', 'ага', 'кнш', 'конечно', 'конешно', 'давай', 'йес', 'yes', 'y', 'aga', 'go', 'da', 'го'].includes(msg.content.toLowerCase())) {
                     message.channel.startTyping();
                     request(`http://${process.env.SITE_DOMAIN}/remove_warn.php?warn=${warn}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
+                        try {
                         message.channel.stopTyping(true);
                         let footer = 'Game🌀Space #' + data2['id'];
                         let embed = new Discord.RichEmbed()
@@ -446,11 +456,13 @@ client.on("message", async message => {
                             .setColor('F1C40F');
                         message.guild.channels.get('426756919777165312').send({embed});
                         message.channel.send({embed});
+                        } catch (Exception) {message.channel.send({embed: embed_error('Ошибка ан-варна.')})}
                     });
                 }
                 console.log(collector);
                 collector.stop();
             });
+            } catch (Exception) {message.channel.send({embed: embed_error('Ошибка ан-варна.')})}
         });
     });
     add_command(['mute', 'мут', 'заклеить_рот', 'заткнуть', 'заткнись', 'закройся'], false, message, command, args, 'rules', ['MANAGE_MESSAGES'], function () {
@@ -513,6 +525,7 @@ client.on("message", async message => {
                 message.channel.startTyping();
                 message.delete();
                 request(`http://${process.env.SITE_DOMAIN}/mute.php?id=${user.user.id}&time=${time*1000}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}`, function (error, response, body) {
+                    try {
                     let data = JSON.parse(body);
                     let footer = 'Game🌀Space #'+data.id;
                     if (reason === null || typeof reason === 'undefined') reason = 'Причина не указана.';
@@ -537,6 +550,7 @@ client.on("message", async message => {
                     user.addRole('427148609776254986').catch(console.error);
                     console.log(time);
                     unmute(user, data.id, time*1000).catch(console.error);
+                    } catch (Exception) {message.channel.send({embed: embed_error('Ошибка мута.')})}
                 });
             }
             console.log(collector);
