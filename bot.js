@@ -239,7 +239,7 @@ client.on('guildMemberUpdate', function (old_member, new_member) {
 });
 
 client.on("message", async message => {
-    
+
 //Системные команды
     if (message.channel.id === '421260737281785856') {
         if(!message.author.bot) return;
@@ -310,14 +310,14 @@ client.on("message", async message => {
                 let embed = new Discord.RichEmbed()
                     .setTitle('Мут')
                     .addField('Пользователь', `${user.user} (\`${user.user.tag}\`)`, true)
-                    .addField('Модератор', `${message.author} (\`${message.author.tag}\`)`, true)
+                    .addField('Модератор', `${client.user} (\`${client.user.tag}\`)`, true)
                     .addField('Длительность', getTimeInWords(time_formatted), true)
                     .setFooter(footer)
                     .setColor('C34E4E');
                 let dm_embed = new Discord.RichEmbed()
                     .setTitle('Мут')
                     .setDescription('Вы были замучены на сервере GameSpace')
-                    .addField('Модератор', `${message.author} (\`${message.author.tag}\`)`, true)
+                    .addField('Модератор', `${client.user} (\`${client.user.tag}\`)`, true)
                     .addField('Длительность', getTimeInWords(time_formatted), true)
                     .setFooter(footer)
                     .setColor('C34E4E');
