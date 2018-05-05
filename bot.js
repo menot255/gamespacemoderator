@@ -437,7 +437,6 @@ client.on("message", async message => {
         collector.on('collect', msg => {
             if (['да', 'ага', 'кнш', 'конечно', 'конешно', 'давай', 'йес', 'yes', 'y', 'aga', 'go', 'da', 'го'].includes(msg.content.toLowerCase())) {
                 message.delete();
-                accepting.delete();
                 try {
                     let footer = 'Game🌀Space #' + number;
                     if (reason === null || typeof reason === 'undefined') reason = 'Причина не указана.';
