@@ -337,6 +337,8 @@ client.on("message", async message => {
 }
  //Игнорирование некоторых типов каналов
     if (['dm', 'group', 'category', 'voice'].includes(message.channel.type)) return;
+
+    if (['445108574688116746'].includes(message.channel.id)) return;
 	
     if (getStringCapsPercent(message.content) > 80 && message.content.replace(/[^a-zа-яA-ZА-ЯІЇЁёії]/g, '').length > 5 && message.content !== '' && !message.author.bot) {
         let reason = 'Капс в чате. Сообщение:\n'+message.content;
