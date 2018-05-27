@@ -105,11 +105,15 @@ function embed_error(text) {
 async function unmute(member, mute_id, time, reason = 'Автоматический анмут') {
     setBigTimeout( function () {
         request(`http://${process.env.SITE_DOMAIN}/unmute.php?mute=${mute_id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, async function (error, response, body) {
-            try { let data = JSON.parse(body);
+            try {
+                let data = JSON.parse(body);
             if (!data['error']) {
-                member.removeRole('427148609776254986').catch(console.error);
-                member.user.send('Вы были размучены.');
-            }} catch (Exception) {}
+                if (member.roles.has('450162523199766528')) {
+                    member.removeRole('450162523199766528').catch(console.error);
+                    member.user.send('Вы были размучены.');
+                }
+            }
+            } catch (Exception) {}
         });
     }, time+1000);
 }
@@ -324,7 +328,7 @@ client.on("message", async message => {
                 if (reason !== null && typeof reason !== undefined && reason !== '') {embed.addField('Причина', `${reason}`);dm_embed.addField('Причина', `${reason}`);}
                 message.guild.channels.get('426756919777165312').send({embed});
                 user.send({embed});
-                user.addRole('427148609776254986').catch(console.error);
+                user.addRole('450162523199766528').catch(console.error);
                 console.log(time);
                 unmute(user, data.id, time*1000).catch(console.error);
             } catch (Exception) {}
@@ -690,7 +694,7 @@ client.on("message", async message => {
                     message.channel.send(`${user.user}`, {embed}).then(() => {message.channel.stopTyping(true)}).then(() => {if (message.author.id === user.user.id) message.channel.send(`${message.author}, не ну ты и долбоеб братишка, земля тебе пухом... ${client.emojis.get(emojis.facepalm)}`)});
                     message.guild.channels.get('426756919777165312').send({embed});
                     user.send({embed});
-                    user.addRole('427148609776254986').catch(console.error);
+                    user.addRole('450162523199766528').catch(console.error);
                     console.log(time);
                     unmute(user, data.id, time*1000).catch(console.error);
                     } catch (Exception) {message.channel.send({embed: embed_error('Ошибка мута.')})}
@@ -707,8 +711,9 @@ client.on("message", async message => {
         let reason = args.join(' ');
         request(`http://${process.env.SITE_DOMAIN}/auto_unmute.php?reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${message.author.id}&id=${member.user.id}`, function (error, response, body) {
             message.channel.send(`Пользователь ${member} был размучен.`);
+            message.author.send('Вы были размучены.')
         });
-        member.removeRole('427148609776254986').catch(console.error);
+        member.removeRole('450162523199766528').catch(console.error);
     });
     add_command(['splooter-nick'], false, message, command, args, 'roles', ['419562566512017415'], function () {
         message.delete();
