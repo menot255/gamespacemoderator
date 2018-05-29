@@ -427,7 +427,7 @@ client.on("message", async message => {
                         if (reason !== null && typeof reason !== undefined && reason !== '') embed.addField('Причина', `${reason}`);
                         message.channel.send(`${message.author} получил варн по причине \`инвайт-ссылка\`. #${data.id}`);
                         message.guild.channels.get('426756919777165312').send(message.guild.roles.find('name', 'everyone').toString(), {embed});
-                    } catch (Exception) {message.channel.send({embed: embed_error('Ошибка авто-варна.')})}
+                    } catch (Exception) {console.log(Exception);message.channel.send({embed: embed_error('Ошибка авто-варна.')})}
                 });
             }
         })
@@ -483,7 +483,7 @@ client.on("message", async message => {
                             message.channel.stopTyping(true)
                         });
                         message.guild.channels.get('426756919777165312').send({embed});
-                    } catch (Exception) {console.log(Exception);message.channel.send({embed: embed_error('Ошибка варна.')})}
+                    } catch (Exception) {message.channel.send({embed: embed_error('Ошибка варна.')})}
                 });
             }
             console.log(collector);
