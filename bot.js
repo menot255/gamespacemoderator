@@ -260,7 +260,7 @@ client.on("messageUpdate", async (old_message, message) => {
                             .setColor('F1C40F');
                         if (reason !== null && typeof reason !== undefined && reason !== '') embed.addField('Причина', `${reason}`);
                         message.channel.send(`${message.author} получил варн по причине \`инвайт-ссылка\`. #${data.id}`);
-                        message.guild.channels.get('426756919777165312').send(message.guild.roles.find('name', 'everyone').toString(), {embed});
+                        message.guild.channels.get('426756919777165312').send('@everyone', {embed});
                     } catch (Exception) {console.log(Exception);message.channel.send({embed: embed_error('Ошибка авто-варна.')})}
                 });
             }
@@ -426,7 +426,7 @@ client.on("message", async message => {
                             .setColor('F1C40F');
                         if (reason !== null && typeof reason !== undefined && reason !== '') embed.addField('Причина', `${reason}`);
                         message.channel.send(`${message.author} получил варн по причине \`инвайт-ссылка\`. #${data.id}`);
-                        message.guild.channels.get('426756919777165312').send(message.guild.roles.find('name', 'everyone').toString(), {embed});
+                        message.guild.channels.get('426756919777165312').send('@everyone', {embed});
                     } catch (Exception) {console.log(Exception);message.channel.send({embed: embed_error('Ошибка авто-варна.')})}
                 });
             }
