@@ -240,6 +240,7 @@ client.on("messageUpdate", async (old_message, message) => {
             arr.push(invite.code);
         });
         let matches = message.content.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/gi);
+        if (matches)
         matches.forEach((match) => {
             let mtch = match.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/i);
             if ((['me', 'io'].includes(mtch[1]) && mtch[3] !== 'gspace') || !arr.includes(mtch[3])) {
@@ -405,6 +406,7 @@ client.on("message", async message => {
             arr.push(invite.code);
         });
         let matches = message.content.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/gi);
+        if (matches)
         matches.forEach((match) => {
             let mtch = match.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/i);
             if ((['me', 'io'].includes(mtch[1]) && mtch[3] !== 'gspace') || !arr.includes(mtch[3])) {
