@@ -243,7 +243,7 @@ client.on("messageUpdate", async (old_message, message) => {
         if (matches)
         matches.forEach((match) => {
             let mtch = match.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/i);
-            if ((['.me', '.io'].includes(mtch[1]) && mtch[3] !== 'gspace') || !arr.includes(mtch[3])) {
+            if ((['.me', '.io'].includes(mtch[1]) && mtch[3] !== 'gspace') && !arr.includes(mtch[3])) {
                 let reason = 'Отправил инвайт ссылку: '+match;
                 message.delete();
                 request(`http://${process.env.SITE_DOMAIN}/warn.php?id=${message.author.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, function (error, response, body) {
@@ -409,7 +409,7 @@ client.on("message", async message => {
         if (matches)
         matches.forEach((match) => {
             let mtch = match.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/i);
-            if ((['.me', '.io'].includes(mtch[1]) && mtch[3] !== 'gspace') || !arr.includes(mtch[3])) {
+            if ((['.me', '.io'].includes(mtch[1]) && mtch[3] !== 'gspace') && !arr.includes(mtch[3])) {
                 let reason = 'Отправил инвайт ссылку: '+match;
                 message.delete();
                 request(`http://${process.env.SITE_DOMAIN}/warn.php?id=${message.author.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, function (error, response, body) {
