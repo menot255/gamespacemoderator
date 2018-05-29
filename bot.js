@@ -233,6 +233,38 @@ client.on("messageUpdate", async (old_message, message) => {
             } catch (Exception) {message.channel.send({embed: embed_error('Ошибка авто-варна.')})}
         });
     }
+
+    let arr = [];
+    message.guild.fetchInvites().then(invites => {
+        invites.forEach(invite => {
+            arr.push(invite.code);
+        });
+        let matches = message.content.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/gi);
+        matches.forEach((match) => {
+            let mtch = match.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/i);
+            if ((['me', 'io'].includes(mtch[1]) && mtch[3] !== 'gspace') || !arr.includes(mtch[3])) {
+                let reason = 'Отправил инвайт ссылку: '+match;
+                message.delete();
+                request(`http://${process.env.SITE_DOMAIN}/warn.php?id=${message.author.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, function (error, response, body) {
+                    try {
+                        let data = JSON.parse(body);
+                        let footer = 'Game🌀Space #'+data.id;
+                        if (reason === null || typeof reason === 'undefined') reason = 'Причина не указана.';
+                        let embed = new Discord.RichEmbed()
+                            .setTitle('Предупреждение')
+                            // .setDescription(`**Пользователь:** ${user.user}\n**Модератор:** ${message.author}\n**Причина:**\n\n${reason}`)
+                            .addField('Пользователь', `${message.author} (\`${message.author.tag}\`)`, true)
+                            .addField('Модератор', `${client.user} (\`${client.user.tag}\`)`, true)
+                            .setFooter(footer)
+                            .setColor('F1C40F');
+                        if (reason !== null && typeof reason !== undefined && reason !== '') embed.addField('Причина', `${reason}`);
+                        message.channel.send(`${message.author} получил варн по причине \`инвайт-ссылка\`. #${data.id}`);
+                        message.guild.channels.get('426756919777165312').send(message.guild.roles.find('name', 'everyone').toString(), {embed});
+                    } catch (Exception) {message.channel.send({embed: embed_error('Ошибка авто-варна.')})}
+                });
+            }
+        })
+    });
 });
 
 client.on('guildMemberUpdate', function (old_member, new_member) {
@@ -366,6 +398,39 @@ client.on("message", async message => {
             }
         });
     }
+
+    let arr = [];
+    message.guild.fetchInvites().then(invites => {
+        invites.forEach(invite => {
+            arr.push(invite.code);
+        });
+        let matches = message.content.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/gi);
+        matches.forEach((match) => {
+            let mtch = match.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/i);
+            if ((['me', 'io'].includes(mtch[1]) && mtch[3] !== 'gspace') || !arr.includes(mtch[3])) {
+                let reason = 'Отправил инвайт ссылку: '+match;
+                message.delete();
+                request(`http://${process.env.SITE_DOMAIN}/warn.php?id=${message.author.id}&reason=${encodeURIComponent(reason)}&secret=${encodeURIComponent(process.env.SECRET_KEY)}&user=${client.user.id}`, function (error, response, body) {
+                    try {
+                        let data = JSON.parse(body);
+                        let footer = 'Game🌀Space #'+data.id;
+                        if (reason === null || typeof reason === 'undefined') reason = 'Причина не указана.';
+                        let embed = new Discord.RichEmbed()
+                            .setTitle('Предупреждение')
+                            // .setDescription(`**Пользователь:** ${user.user}\n**Модератор:** ${message.author}\n**Причина:**\n\n${reason}`)
+                            .addField('Пользователь', `${message.author} (\`${message.author.tag}\`)`, true)
+                            .addField('Модератор', `${client.user} (\`${client.user.tag}\`)`, true)
+                            .setFooter(footer)
+                            .setColor('F1C40F');
+                        if (reason !== null && typeof reason !== undefined && reason !== '') embed.addField('Причина', `${reason}`);
+                        message.channel.send(`${message.author} получил варн по причине \`инвайт-ссылка\`. #${data.id}`);
+                        message.guild.channels.get('426756919777165312').send(message.guild.roles.find('name', 'everyone').toString(), {embed});
+                    } catch (Exception) {message.channel.send({embed: embed_error('Ошибка авто-варна.')})}
+                });
+            }
+        })
+    });
+
 
     if (['dm', 'group', 'category', 'voice'].includes(message.channel.type)) return;
     if (!['417266233562365952', '416813030232424462'].includes(message.guild.id)) {
