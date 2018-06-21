@@ -239,10 +239,10 @@ client.on("messageUpdate", async (old_message, message) => {
         invites.forEach(invite => {
             arr.push(invite.code);
         });
-        let matches = message.content.match(/discord(app\.com\/invite|\.gg|\.me|\.io)\/?([_a-zA-Z0-9]{5,32})/gi);
+        let matches = message.content.match(/discord(app\.com\/invite|\.gg|\.me|\.io)\/?([_a-zA-Z0-9]{1,32})/gi);
         if (matches)
         matches.forEach((match) => {
-            let mtch = match.match(/discord(app\.com\/invite|\.gg|\.me|\.io)\/?([_a-zA-Z0-9]{5,32})/i);
+            let mtch = match.match(/discord(app\.com\/invite|\.gg|\.me|\.io)\/?([_a-zA-Z0-9]{1,32})/i);
             if (!arr.includes(mtch[3])) {
                 let reason = 'Отправил инвайт ссылку: '+match;
                 message.delete();
@@ -260,7 +260,7 @@ client.on("messageUpdate", async (old_message, message) => {
                             .setColor('F1C40F');
                         if (reason !== null && typeof reason !== undefined && reason !== '') embed.addField('Причина', `${reason}`);
                         message.channel.send(`${message.author} получил варн по причине \`инвайт-ссылка\`. #${data.id}`);
-                        message.guild.channels.get('426756919777165312').send('@everyone', {embed});
+                        message.guild.channels.get('426756919777165312').send('', {embed});
                     } catch (Exception) {console.log(Exception);message.channel.send({embed: embed_error('Ошибка авто-варна.')})}
                 });
             }
@@ -405,10 +405,10 @@ client.on("message", async message => {
         invites.forEach(invite => {
             arr.push(invite.code);
         });
-        let matches = message.content.match(/discord(app\.com\/invite|\.gg|\.me|\.io)\/?([_a-zA-Z0-9]{5,32})/gi);
+        let matches = message.content.match(/discord(app\.com\/invite|\.gg|\.me|\.io)\/?([_a-zA-Z0-9]{1,32})/gi);
         if (matches)
         matches.forEach((match) => {
-            let mtch = match.match(/discord(app\.com\/invite|\.gg|\.me|\.io)\/?([_a-zA-Z0-9]{5,32})/i);
+            let mtch = match.match(/discord(app\.com\/invite|\.gg|\.me|\.io)\/?([_a-zA-Z0-9]{1,32})/i);
             if (!arr.includes(mtch[3])) {
                 let reason = 'Отправил инвайт ссылку: '+match;
                 message.delete();
@@ -426,7 +426,7 @@ client.on("message", async message => {
                             .setColor('F1C40F');
                         if (reason !== null && typeof reason !== undefined && reason !== '') embed.addField('Причина', `${reason}`);
                         message.channel.send(`${message.author} получил варн по причине \`инвайт-ссылка\`. #${data.id}`);
-                        message.guild.channels.get('426756919777165312').send('@everyone', {embed});
+                        message.guild.channels.get('426756919777165312').send('', {embed});
                     } catch (Exception) {console.log(Exception);message.channel.send({embed: embed_error('Ошибка авто-варна.')})}
                 });
             }
