@@ -405,10 +405,10 @@ client.on("message", async message => {
         invites.forEach(invite => {
             arr.push(invite.code);
         });
-        let matches = message.content.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/gi);
+        let matches = message.content.match(/discord(app\.com\/invite|\.gg|\.me|\.io)\/?([_a-zA-Z0-9]{5,32})/gi);
         if (matches)
         matches.forEach((match) => {
-            let mtch = match.match(/discord(app\.com|\.gg|\.me|\.io)\/?(invite\/)?([_a-zA-Z0-9]{5,32})/i);
+            let mtch = match.match(/discord(app\.com\/invite|\.gg|\.me|\.io)\/?([_a-zA-Z0-9]{5,32})/i);
             if (!arr.includes(mtch[3])) {
                 let reason = 'Отправил инвайт ссылку: '+match;
                 message.delete();
