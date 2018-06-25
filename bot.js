@@ -76,7 +76,7 @@ function setBigTimeout(func, timeout) {
 }
 
 function  getStringCapsPercent(string) {
-    let str = string.trim().replace(/<:(.*?):(.*?)>/g, '').replace(/<a:(.*?):(.*?)>/g, '');
+    let str = string.trim().replace(/<a?:(.*?):\d+>/g, '');
     let length = str.replace(/[^a-zа-яA-ZА-ЯІЇЁёії]/g, '').length;
     if (length === 0) return;
     let caps = str.replace(/[^A-ZА-ЯІЇЁ]/g, '').length;
