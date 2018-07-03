@@ -235,6 +235,7 @@ client.on("messageUpdate", async (old_message, message) => {
     }
 
     let arr = ['gspace'];
+    if (!message.member.roles.has('417267817763831808'))
     message.guild.fetchInvites().then(invites => {
         invites.forEach(invite => {
             arr.push(invite.code);
@@ -401,6 +402,7 @@ client.on("message", async message => {
     }
 
     let arr = ['gspace'];
+    if (!message.member.roles.has('417267817763831808'))
     message.guild.fetchInvites().then(invites => {
         invites.forEach(invite => {
             arr.push(invite.code);
