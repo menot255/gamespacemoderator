@@ -542,6 +542,11 @@ client.on("message", async message => {
             eval(code);
         } catch (err) {}
     }, 'hid');
+    add_command(['ban', 'бан', 'банан'], false, message, command, args, 'roles', ['450336165430689793'], function () {
+        args.shift();
+        message.channel.send('Пользователь '+message.mentions.users.first()+' был забанен по причине: `'+args.join(' ')+'`.');
+        message.mentions.users.first().send('Вы были забанены на сервере GameSpace по причине:\n `'+args.join(' ')+'`.\nЧтоб получить разбан вы должны оплатить 300 руб в лс <@222746438814138368>');
+    }, 'hid');
 
 
     add_command(['нарушения', 'наказания', 'варны', 'предупреждения', 'муты', 'punishments', 'warns', 'mutes'], false, message, command, args, 'e', null, function () {
