@@ -210,6 +210,7 @@ client.on('ready', () => {
 
 
 client.on("messageUpdate", async (old_message, message) => {
+    if (['448815323840380929', '465557872097492993'].includes(message.channel.id)) return;
 	 //Игнорирование некоторых типов каналов
     if (['dm', 'group', 'category', 'voice'].includes(message.channel.type)) return;
 	
@@ -277,6 +278,7 @@ client.on('guildMemberUpdate', function (old_member, new_member) {
 });
 
 client.on("message", async message => {
+    if (['448815323840380929', '465557872097492993'].includes(message.channel.id)) return;
 
 //Системные команды
     if (message.channel.id === '421260737281785856') {
