@@ -364,7 +364,7 @@ client.on("message", async message => {
                 if (reason !== null && typeof reason !== undefined && reason !== '') {embed.addField('Причина', `${reason}`);dm_embed.addField('Причина', `${reason}`);}
                 message.guild.channels.get('426756919777165312').send({embed});
                 user.send({embed});
-                user.addRole('450162523199766528').catch(console.error);
+                user.addRole('441280482529771520').catch(console.error);
                 console.log(time);
                 unmute(user, data.id, time*1000).catch(console.error);
             } catch (Exception) {}
@@ -435,7 +435,7 @@ client.on("message", async message => {
                 });
             }
         })
-    });
+    }); //ззигер лох ыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыыы
 
 
     if (['dm', 'group', 'category', 'voice'].includes(message.channel.type)) return;
